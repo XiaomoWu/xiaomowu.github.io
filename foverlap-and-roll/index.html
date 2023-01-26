@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>How to query an interval? Understand `foverlap` and `roll` in data.table - </title><meta name="Description" content="Yu Zhu&#39;s Personal Site"><meta property="og:title" content="How to query an interval? Understand `foverlap` and `roll` in data.table" />
+<meta property="og:description" content="How to query the surrounding days given an event?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugodoit.pages.dev/foverlap-and-roll/" /><meta property="og:image" content="https://hugodoit.pages.dev/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-23T15:40:00-07:00" />
+<meta property="article:modified_time" content="2023-01-24T05:52:18-07:00" /><meta property="og:site_name" content="Yu.Z&#39;s Personal Site" />
+<meta property="og:see_also" content="https://hugodoit.pages.dev/parallel-in-r/" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://hugodoit.pages.dev/logo.png"/>
+
+<meta name="twitter:title" content="How to query an interval? Understand `foverlap` and `roll` in data.table"/>
+<meta name="twitter:description" content="How to query the surrounding days given an event?"/>
+<meta name="application-name" content="YZ&#39;s Site">
+<meta name="apple-mobile-web-app-title" content="YZ&#39;s Site">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://hugodoit.pages.dev/foverlap-and-roll/" /><link rel="prev" href="https://hugodoit.pages.dev/parallel-in-r/" /><link rel="next" href="https://hugodoit.pages.dev/how-to-use-ccm/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "How to query an interval? Understand `foverlap` and `roll` in data.table",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/hugodoit.pages.dev\/foverlap-and-roll\/"
+        },"genre": "posts","keywords": "r, data.table","wordcount":  882 ,
+        "url": "https:\/\/hugodoit.pages.dev\/foverlap-and-roll\/","datePublished": "2023-01-23T15:40:00-07:00","dateModified": "2023-01-24T05:52:18-07:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/hugodoit.pages.dev\/images\/avatar.jpg"},"authors": [{
+                        "@type": "Person",
+                        "name": "Yu.Z"                    
+                    }],"description": ""
+    }
+    </script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) {document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark');}
+        function saveTheme(theme) {window.localStorage && localStorage.setItem('theme', theme);}
+        function getMeta(metaName) {const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return '';}
+        if (window.localStorage && localStorage.getItem('theme')) {let theme = localStorage.getItem('theme');theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light');}
+        let metaColors = {'light': '#f8f8f8','dark': '#252627','black': '#000000'}
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Research Blogs </a><a class="menu-item" href="/series/"> Series </a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="#" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" title="Select Language" id="language-select-desktop" onchange="location = this.value;"><option value="/foverlap-and-roll/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="#" class="menu-item theme-select" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                    <select class="color-theme-select" id="theme-select-desktop" title="Switch Theme">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="black">Black</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="#" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Research Blogs</a><a class="menu-item" href="/series/" title="">Series</a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="#" class="menu-item theme-select" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+                <select class="color-theme-select" id="theme-select-mobile" title="Switch Theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="black">Black</option>
+                    <option value="auto">Auto</option>
+                </select>
+            </a><a href="#" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" title="Select Language" onchange="location = this.value;"><option value="/foverlap-and-roll/" selected>English</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+            <div class="container"><div class="toc" id="toc-auto">
+        <h2 class="toc-title">Contents</h2>
+        <div class="toc-content" id="toc-content-auto"><nav id="TableOfContents"></nav></div>
+    </div><script>document.getElementsByTagName("main")[0].setAttribute("pageStyle", "normal")</script><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC", "true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">How to query an interval? Understand `foverlap` and `roll` in data.table</h1><div class="post-meta">
+            <div class="post-meta-line">
+                <span class="post-author"><span class='author'><i class="author fas fa-user-circle fa-fw"></i><span class='screen-reader-text'>  </span><a href='https://hugodoit.pages.dev/authors/yu.z'>Yu Zhu</a></span>
+                </span>&nbsp;<span class="post-category">included in </span>&nbsp;<span class="post-series">series <a href="/series/r-and-datatable/"><i class="far fa-list-alt fa-fw"></i>R and datatable</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2023-01-23">2023-01-23</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime="2023-01-24">2023-01-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;882 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details series-nav open">
+                                <div class="details-summary series-title">
+                                    <span>Series - R and datatable</span>
+                                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                                </div>
+                                <div class="details-content series-content">
+                                    <nav>
+                                        <ul><li><span class="active">How to query an interval? Understand `foverlap` and `roll` in data.table</span></li>
+                                                    <li><a href="/parallel-in-r/">Parallelization in R</a></li></ul>
+                                    </nav>
+                                </div>
+                            </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><h1 id="query-the-interval-foverlap" class="headerLink">
+    <a href="#query-the-interval-foverlap" class="header-mark"></a>Query the interval: <code>foverlap</code></h1><p>We often need to query overlaps. For example, given a table of daily trading volume, we want to find for each day <code>t</code>, the trading volume of its <em>surrounding days</em>, i.e., <code>[t-N,t+N]</code>.</p>
+<p><strong>Example:</strong></p>
+<p>Suppose we have an <code>event</code> table. The <code>event</code> table contains the event date. Events are <em>infrequent</em>. In our example, events only take place on day 1, 3, 5:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># event: infrequent events of interests</span>
+</span></span><span class="line"><span class="cl"><span class="n">event</span> <span class="o">=</span> <span class="nf">data.table</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">event</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>There&rsquo;s another table, called <code>history</code>. The <code>history</code> table records values of interest <em>on each day.</em> In the example, the <code>history</code> table has a <code>value</code> for each day from 1 to 5:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># history: chronical records *for each date*.</span>
+</span></span><span class="line"><span class="cl"><span class="n">history</span> <span class="o">=</span> <span class="nf">data.table</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nf">sample</span><span class="p">(</span><span class="kc">letters</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">history</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1     v</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    2     s</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    3     j</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 4:    4     p</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 5:    5     p</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Our goal: For each date <code>t</code>, find the <code>value</code> in the range of <code>[t-1,t+1]</code>:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># our goal:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1   v,s</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3 s,j,p</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5   p,p</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>To achieve our goal, follow these steps:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># Step 1: add start/end to event</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">event[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">date</span><span class="m">-1</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">date</span><span class="m">+1</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl"><span class="nf">setkey</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>  <span class="c1"># event *must* be keyed!</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">event</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date start end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1     0   2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3     2   4</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5     4   6</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 2: add start/end to history</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">date</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl"><span class="nf">setkey</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>  <span class="c1"># history is *recommended* to be keyed</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">history</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value start end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1     v     1   1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    2     s     2   2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    3     j     3   3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 4:    4     p     4   4</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 5:    5     p     5   5</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 3: run foverlaps!</span>
+</span></span><span class="line"><span class="cl"><span class="n">out</span> <span class="o">=</span> <span class="nf">foverlaps</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">out[</span><span class="p">,</span> <span class="n">.(value</span><span class="o">=</span><span class="nf">list</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="n">keyby</span><span class="o">=</span><span class="n">.(date</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1   v,s</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3 s,j,p</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5   p,p</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="query-the-fuzzy-point-roll" class="headerLink">
+    <a href="#query-the-fuzzy-point-roll" class="header-mark"></a>Query the fuzzy point: <code>roll</code></h1><p>Sometimes we don&rsquo;t need to find <em>all</em> surrounding days for the event date. Instead, we only need to find the &ldquo;nearest&rdquo; day for the event date. This is when <code>roll</code> comes in.</p>
+<p><strong>Example:</strong></p>
+<p>Let&rsquo;s say this time we only have one event at day 2:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">event</span> <span class="o">=</span> <span class="nf">data.table</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    2</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The history table, contains 5 obs:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">history</span> <span class="o">=</span> <span class="nf">data.table</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">9</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="nf">sample</span><span class="p">(</span><span class="kc">letters</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1     r</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3     b</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5     g</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 4:    8     e</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 5:    9     g</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Our goal: find the matched obs 4 days after the event (i.e., day 6)</strong></p>
+<p>Step 1: Add the <code>join_date</code> to <code>event</code> and <code>history</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># Add join_date to the event table</span>
+</span></span><span class="line"><span class="cl"><span class="n">event[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">join_date</span><span class="o">=</span><span class="n">date</span><span class="m">+4</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date join_date</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    2         6</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Add join_date to the history table</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">join_date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span><span class="n">]</span>  <span class="c1"># the join_date is the same as date!</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value join_date</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    1     r         1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 2:    3     b         3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 3:    5     g         5</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 4:    8     e         8</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 5:    9     g         9</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Step 2: Use <code>event</code> to &ldquo;query&rdquo; <code>history</code>.</p>
+<p>The results <em>vary</em> depending on the <code>roll</code> options</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="c1"># Case 1: closest: the closest to &#34;6&#34; is &#34;5&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[event</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(join_date</span><span class="p">),</span> <span class="n">roll</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="n">][</span><span class="p">,</span> <span class="n">.(date</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    5     g</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Case 2: Inf: match the *previling* value (LOCF). The previling value of &#34;6&#34; is &#34;5&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[event</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(join_date</span><span class="p">),</span> <span class="n">roll</span><span class="o">=</span><span class="kc">Inf</span><span class="n">][</span><span class="p">,</span> <span class="n">.(date</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    5     g</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Case 3: -Inf: match the *next* value (NOCB). The next value of &#34;6&#34; is &#34;8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[event</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(join_date</span><span class="p">),</span> <span class="n">roll</span><span class="o">=-</span><span class="kc">Inf</span><span class="n">][</span><span class="p">,</span> <span class="n">.(date</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    8     e</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Case 4: Positive: match the previling at no more than &#34;roll&#34; days</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The previling value of &#34;6&#34; is &#34;5&#34;, which is within 1 day</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[event</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(join_date</span><span class="p">),</span> <span class="n">roll</span><span class="o">=</span><span class="m">1</span><span class="n">][</span><span class="p">,</span> <span class="n">.(date</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:    5     g</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Case 5: Negative: match the next at no more than &#34;roll&#34; days</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The next no-more-than-one value of &#34;6&#34; is &#34;7&#34;, match *failed*</span>
+</span></span><span class="line"><span class="cl"><span class="n">history[event</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(join_date</span><span class="p">),</span> <span class="n">roll</span><span class="o">=</span><span class="m">-1</span><span class="n">][</span><span class="p">,</span> <span class="n">.(date</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt;    date value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#&gt; 1:   NA  &lt;NA&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>The unit of `roll`<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>The unit of <code>roll</code> (when specified as a number) <em>depends on the unit of <code>join_date</code></em>.</p>
+<ul>
+<li>If <code>join_date</code> is <code>Date</code>, the unit is <em>day</em>, i.e.,  <code>roll=5</code> means LOCF no more than 5 <em>days</em>.</li>
+<li>If <code>join_date</code> is <code>POSIXct</code>, the unit is <em>second</em>, i.e., <code>roll=5</code> means LOCF no more than 5 <em>seconds.</em></li>
+</ul>
+</div>
+        </div>
+    </div>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>`foverlap` vs. `roll`: When to use which?<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>Both methods are fast!</p>
+<p><code>foverlaps</code></p>
+<ul>
+<li>Pros:
+<ul>
+<li>allows for <em>precise</em> matching</li>
+<li>could match to <em>multiple</em> values</li>
+</ul>
+</li>
+<li>Cons:
+<ul>
+<li>can&rsquo;t do <em>fuzzy</em> matching</li>
+<li>more complicated</li>
+</ul>
+</li>
+</ul>
+<p><code>roll</code></p>
+<ul>
+<li>Pros:
+<ul>
+<li>could do <em>fuzzy</em> matching</li>
+<li>less code</li>
+</ul>
+</li>
+<li>Cons:
+<ul>
+<li>couldn&rsquo;t do precise matching (can only specify a range)</li>
+<li>only matches to <em>one</em> value</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+    </div>
+</div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-01-24</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="#" title="Share on Twitter" data-sharer="twitter" data-url="https://hugodoit.pages.dev/foverlap-and-roll/" data-title="How to query an interval? Understand `foverlap` and `roll` in data.table" data-hashtags="r,data.table"><i class="fab fa-twitter fa-fw"></i></a><a href="#" title="Share on Facebook" data-sharer="facebook" data-url="https://hugodoit.pages.dev/foverlap-and-roll/" data-hashtag="r"><i class="fab fa-facebook-square fa-fw"></i></a><a href="#" title="Share on Hacker News" data-sharer="hackernews" data-url="https://hugodoit.pages.dev/foverlap-and-roll/" data-title="How to query an interval? Understand `foverlap` and `roll` in data.table"><i class="fab fa-hacker-news fa-fw"></i></a><a href="#" title="Share on 微博" data-sharer="weibo" data-url="https://hugodoit.pages.dev/foverlap-and-roll/" data-title="How to query an interval? Understand `foverlap` and `roll` in data.table"><i class="fab fa-weibo fa-fw"></i></a><a href="#" title="Share on Evernote" data-sharer="evernote" data-url="https://hugodoit.pages.dev/foverlap-and-roll/" data-title="How to query an interval? Understand `foverlap` and `roll` in data.table"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/r/">r</a>,&nbsp;<a href="/tags/data.table/">data.table</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/parallel-in-r/" class="prev" rel="prev" title="Parallelization in R"><i class="fas fa-angle-left fa-fw"></i>Parallelization in R</a>
+            <a href="/how-to-use-ccm/" class="next" rel="next" title="The correct way to use CCM">The correct way to use CCM<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="twikoo"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://twikoo.js.org/">Twikoo</a>.
+            </noscript></div></article></div>
+        </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">
+                    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.110.0">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank" rel="noopener noreferrer" title="DoIt 0.2.13"><i class="far fa-edit fa-fw"></i> DoIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/XiaomoWu" target="_blank" rel="noopener noreferrer">Yu Zhu</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+            <div class="footer-line"></div>
+            <div class="footer-line">
+            </div>
+        </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div class="assets"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{"twikoo":{"el":"#twikoo","envId":"https://twikoo-xiaomowu.vercel.app/","lang":"en"}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":true,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":300,"threshold":0.1,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"twemoji":true};</script><script type="text/javascript" src="/lib/twikoo/twikoo.all.min.js" defer></script><script type="text/javascript" src="/js/twikoo.min.js" defer></script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js" defer></script><script type="text/javascript" src="/js/twemoji.min.js" defer></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script></div>
+</body>
+
+</html>

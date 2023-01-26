@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>Nailing down the earnings event time to the millisecond
+ - </title><meta name="Description" content="Yu Zhu&#39;s Personal Site"><meta property="og:title" content="Nailing down the earnings event time to the millisecond
+" />
+<meta property="og:description" content="Find the millisecond-level earnings event time by combining Captial IQ and RavenPack" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugodoit.pages.dev/nail-down-earnings-time/" /><meta property="og:image" content="https://hugodoit.pages.dev/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-25T16:57:41-07:00" />
+<meta property="article:modified_time" content="2023-01-26T01:40:44-07:00" /><meta property="og:site_name" content="Yu.Z&#39;s Personal Site" />
+<meta property="og:see_also" content="https://hugodoit.pages.dev/accepted-date-not-match-edgar/" /><meta property="og:see_also" content="https://hugodoit.pages.dev/how-to-use-ccm/" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://hugodoit.pages.dev/logo.png"/>
+
+<meta name="twitter:title" content="Nailing down the earnings event time to the millisecond
+"/>
+<meta name="twitter:description" content="Find the millisecond-level earnings event time by combining Captial IQ and RavenPack"/>
+<meta name="application-name" content="YZ&#39;s Site">
+<meta name="apple-mobile-web-app-title" content="YZ&#39;s Site">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://hugodoit.pages.dev/nail-down-earnings-time/" /><link rel="prev" href="https://hugodoit.pages.dev/accepted-date-not-match-edgar/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Nailing down the earnings event time to the millisecond\n",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/hugodoit.pages.dev\/nail-down-earnings-time\/"
+        },"genre": "posts","keywords": "wrds, ravenpack","wordcount":  2487 ,
+        "url": "https:\/\/hugodoit.pages.dev\/nail-down-earnings-time\/","datePublished": "2023-01-25T16:57:41-07:00","dateModified": "2023-01-26T01:40:44-07:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/hugodoit.pages.dev\/images\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Yu Zhu"
+            },"description": ""
+    }
+    </script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) {document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark');}
+        function saveTheme(theme) {window.localStorage && localStorage.setItem('theme', theme);}
+        function getMeta(metaName) {const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return '';}
+        if (window.localStorage && localStorage.getItem('theme')) {let theme = localStorage.getItem('theme');theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light');}
+        let metaColors = {'light': '#f8f8f8','dark': '#252627','black': '#000000'}
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Research Blogs </a><a class="menu-item" href="/series/"> Series </a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="#" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" title="Select Language" id="language-select-desktop" onchange="location = this.value;"><option value="/nail-down-earnings-time/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="#" class="menu-item theme-select" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                    <select class="color-theme-select" id="theme-select-desktop" title="Switch Theme">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="black">Black</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="#" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Research Blogs</a><a class="menu-item" href="/series/" title="">Series</a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="#" class="menu-item theme-select" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+                <select class="color-theme-select" id="theme-select-mobile" title="Switch Theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="black">Black</option>
+                    <option value="auto">Auto</option>
+                </select>
+            </a><a href="#" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" title="Select Language" onchange="location = this.value;"><option value="/nail-down-earnings-time/" selected>English</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+            <div class="container"><div class="toc" id="toc-auto">
+        <h2 class="toc-title">Contents</h2>
+        <div class="toc-content" id="toc-content-auto"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#background-how-does-the-earnings-news-arrive-at-you">Background: How does the earnings news arrive at you?</a></li>
+    <li><a href="#sec-filing-date-has-a-lag">SEC filing date has a lag</a></li>
+    <li><a href="#rdq-is-good-but-it-has-no-time-component"><code>RDQ</code> is good, but it has no time component</a></li>
+    <li><a href="#mostimportantdateutc-in-ciq-is-good-but-not-perfect"><code>mostImportantDateUTC</code> in CIQ is good, but not perfect</a></li>
+    <li><a href="#combine-ravenpack-and-capital-iq">Combine RavenPack and Capital IQ</a>
+      <ul>
+        <li><a href="#the-logic-of-code">The logic of code</a></li>
+        <li><a href="#r-code">R Code</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+    </div><script>document.getElementsByTagName("main")[0].setAttribute("pageStyle", "normal")</script><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC", "true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Nailing down the earnings event time to the millisecond
+</h1><div class="post-meta">
+            <div class="post-meta-line">
+                <span class="post-author"><i class="author fas fa-user-circle fa-fw"></i><a href="https://github.com/XiaomoWu" title="Author" target="_blank" rel="noopener noreferrer author" class="author">Yu Zhu</a>
+                </span>&nbsp;<span class="post-category">included in </span>&nbsp;<span class="post-series">series <a href="/series/wrds-tips/"><i class="far fa-list-alt fa-fw"></i>WRDS Tips</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2023-01-25">2023-01-25</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime="2023-01-26">2023-01-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2487 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;12 minutes&nbsp;</div>
+        </div><div class="details series-nav open">
+                                <div class="details-summary series-title">
+                                    <span>Series - WRDS Tips</span>
+                                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                                </div>
+                                <div class="details-content series-content">
+                                    <nav>
+                                        <ul><li><span class="active">Nailing down the earnings event time to the millisecond
+</span></li>
+                                                    <li><a href="/accepted-date-not-match-edgar/">The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+</a></li>
+                                                    <li><a href="/how-to-use-ccm/">The correct way to use CCM</a></li></ul>
+                                    </nav>
+                                </div>
+                            </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#background-how-does-the-earnings-news-arrive-at-you">Background: How does the earnings news arrive at you?</a></li>
+    <li><a href="#sec-filing-date-has-a-lag">SEC filing date has a lag</a></li>
+    <li><a href="#rdq-is-good-but-it-has-no-time-component"><code>RDQ</code> is good, but it has no time component</a></li>
+    <li><a href="#mostimportantdateutc-in-ciq-is-good-but-not-perfect"><code>mostImportantDateUTC</code> in CIQ is good, but not perfect</a></li>
+    <li><a href="#combine-ravenpack-and-capital-iq">Combine RavenPack and Capital IQ</a>
+      <ul>
+        <li><a href="#the-logic-of-code">The logic of code</a></li>
+        <li><a href="#r-code">R Code</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="tldr" class="headerLink">
+    <a href="#tldr" class="header-mark"></a>1 TL;DR</h2><p>Nailing down the earnings announcement time (ideally to the seconds or milliseconds) is critical to measure market response. However, many databases usually don&rsquo;t provide a precise event timestamp. For those who do, the data quality is questionable, if not confusing.</p>
+<p>In this article, I&rsquo;ll investigate the following four popular databases and tell you which offers the most precise timestamp of earnings events.</p>
+<p>The databases and the timestamp variables we&rsquo;ll look at (All of them are available at WRDS) are:</p>
+<ul>
+<li>
+<p><strong>Compustat (from S&amp;P)</strong></p>
+<ul>
+<li><code>RDQ</code> (report date quarterly) is offered by Compustat to indicate &ldquo;the earliest time EPS data is public&rdquo;. <code>RDQ</code> is a Date, e.g., <code>2001-01-01</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Key Development from Capital IQ (hereafter CIQ, also from S&amp;P)</strong></p>
+<ul>
+<li><code>mostImportantDateUTC</code> is a DateTime (e.g., <code>2001-01-01 12:24:00</code>) precise to the minute (I&rsquo;ll explain later why it&rsquo;s not on the second level). To use it you need to convert it to Eastern Time.</li>
+</ul>
+</li>
+<li>
+<p><strong>WRDS SEC Analytic Suite (from SEC and compiled by WRDS)</strong></p>
+<ul>
+<li><code>fdate</code> (filing date), <code>secadate</code>/<code>secatime</code> (EDGAR accepted date/time) are collected EDGAR. You can find them in the <code>wrds_forms</code> table from WRDS SEC Analytics Suite.</li>
+</ul>
+</li>
+<li>
+<p><strong>RavenPack (hereafter RP)</strong></p>
+<ul>
+<li><code>timestamp_utc</code> is the news timestamp to the <em>milliseconds</em>. It&rsquo;s the only variable that offers millisecond-level data.</li>
+</ul>
+</li>
+</ul>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>Guide<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><ul>
+<li>
+<p>The filing date (<code>fdate</code>) and accepted datetime (<code>secadate</code> and <code>secatime</code>) from SEC are <em>not</em> the first public time. They have lags.</p>
+</li>
+<li>
+<p>The <code>rdq</code> from Compustat also has lags</p>
+</li>
+<li>
+<p>The <code>mostImportantDateUTC</code> from Capital IQ is better but still has some issues. If you don&rsquo;t want to bother with RavenPack, I suggest you use CIQ in the following way:</p>
+<ul>
+<li>
+<p>If the time component of <code>mostImportantDateUTC</code> is zero (e.g., &lsquo;2001-01-01 00:00:00&rsquo;), then treat ostImportantDateUTC` as the Eastern Time. In this case, you can&rsquo;t pin down the precise time of the day but the date should be correct.</p>
+</li>
+<li>
+<p>If it does has a none-zero time component (e.g., &lsquo;2001-01-01 12:03:00&rsquo;), converting <code>mostImportantDateUTC</code> to ET is safe and recommended.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Your best bet is <strong>combining RavenPack and CIQ</strong> , but it <strong>requires a lot of data cleaning.</strong></p>
+</li>
+</ul>
+</div>
+        </div>
+    </div>
+<h2 id="background-how-does-the-earnings-news-arrive-at-you" class="headerLink">
+    <a href="#background-how-does-the-earnings-news-arrive-at-you" class="header-mark"></a>2 Background: How does the earnings news arrive at you?</h2><p>We all know the earnings data (e.g., EPS) is from the company. But how soon this data arrives to you heavily depends on the channel. Typically, the earnings data is released and spread in this order:</p>
+<ul>
+<li>
+<p>A company releases information to all parties at roughly the same time. To SEC, that will be an EDGAR filing, to the media; it&rsquo;s a written press release. Note that what the company submits to EDGAR at this time is an <em>8-K, not 10-Q.</em> The 8-K only covers critical profits and operation data. The more detailed 10-Q is usually filed days later.</p>
+</li>
+<li>
+<p>SEC (EDGAR) takes some time to process the filing before it accepts and publishes it online, creating a lag.</p>
+<ul>
+<li>If the filing is received before 5:30 pm ET, then EDGAR will process it in (usually) less than two minutes and release it afterwards.</li>
+<li>If the filing is received after 5:30 pm, then normally it will have a filing date <em>of the next trading day</em> (<a href="https://www.sec.gov/info/edgar/specifications/edgarfm-vol2-v54.pdf" target="_blank" rel="noopener noreferrer">See Section 3.2 of this official doc</a>). In this case, the filing date will be <em>one day after</em> the actual event date.</li>
+</ul>
+</li>
+<li>
+<p>Media outlets, however, are not obliged to validate the information so <a href="https://money.stackexchange.com/questions/33841/where-do-company-filings-go-first?rq=1" target="_blank" rel="noopener noreferrer">they may release the news <em>before</em> EDGAR.</a> The lead of media report could be in minutes or even hours.</p>
+</li>
+</ul>
+<h2 id="sec-filing-date-has-a-lag" class="headerLink">
+    <a href="#sec-filing-date-has-a-lag" class="header-mark"></a>3 SEC filing date has a lag</h2><p>As discussed above, SEC filing date may be later than the media. Here I provide an example.
+In the screenshot of EDGAR (SEC accession No. 0001171843-15-001360) below, the accepted time is before the EDGAR close time (5:30 pm ET), so the filing date (<code>fdate</code>) and accepted date (<code>secadate</code>) is on the same day.</p>
+<figure><a class="lightgallery" href="/nail-down-earnings-time/2-edgar.png" title="/nail-down-earnings-time/2-edgar.png" data-thumbnail="/nail-down-earnings-time/2-edgar.png" data-sub-html="<h2>Filing date is on the same day as the accepted date</h2>">
+        <img
+            
+            loading="lazy"
+            src="2-edgar.png"
+            srcset="/nail-down-earnings-time/2-edgar.png, 2-edgar.png 1.5x, /nail-down-earnings-time/2-edgar.png 2x"
+            sizes="auto"
+            alt="/nail-down-earnings-time/2-edgar.png"width="400">
+    </a><figcaption class="image-caption">Filing date is on the same day as the accepted date</figcaption>
+    </figure>
+<p>In contrast, in the following screenshot, filing date is one day after the accepted date since it&rsquo;s submitted after 5:30 pm ET:</p>
+<figure><a class="lightgallery" href="/nail-down-earnings-time/3.png" title="/nail-down-earnings-time/3.png" data-thumbnail="/nail-down-earnings-time/3.png" data-sub-html="<h2>Filing date is one day later than accepted date</h2>">
+        <img
+            
+            loading="lazy"
+            src="3.png"
+            srcset="/nail-down-earnings-time/3.png, 3.png 1.5x, /nail-down-earnings-time/3.png 2x"
+            sizes="auto"
+            alt="/nail-down-earnings-time/3.png"width="350">
+    </a><figcaption class="image-caption">Filing date is one day later than accepted date</figcaption>
+    </figure>
+<p>The <a href="https://www.sec.gov/info/edgar/specifications/edgarfm-vol2-v54.pdf" target="_blank" rel="noopener noreferrer">official manual</a> of EDGAR also says EDGAR only accept filings between 6 am and 10 pm ET. As a results, the accepted time of any filing should also be within this range. I checked and confirmed that. (There&rsquo;re a few exceptions whose accepted date is around 00:00:00 though)</p>
+<figure><a class="lightgallery" href="/nail-down-earnings-time/4.png" title="/nail-down-earnings-time/4.png" data-thumbnail="/nail-down-earnings-time/4.png" data-sub-html="<h2>Distribution of accepted time</h2>">
+        <img
+            
+            loading="lazy"
+            src="4.png"
+            srcset="/nail-down-earnings-time/4.png, 4.png 1.5x, /nail-down-earnings-time/4.png 2x"
+            sizes="auto"
+            alt="/nail-down-earnings-time/4.png"width="350">
+    </a><figcaption class="image-caption">Distribution of accepted time</figcaption>
+    </figure>
+<p>To summary, SEC dates are generally later than media due to the limitations of EDGAR.</p>
+<div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw"></i>Some `secadate` and `fdate` are years gapped!<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>You may find some <code>secadate</code> are years after the <code>fdate</code>:</p>
+<p>The reason is that some filings are initially filed by paper and later converted to digital format by EDGAR. Refer to my previous post &ldquo;The &ldquo;Accepted Date&rdquo; from WRDS SEC suite doesn&rsquo;t match EDGAR&rdquo; for detail.</p>
+<p><strong>The issue will be almost gone for recent filings:</strong></p>
+<ul>
+<li>For <code>fdate&gt;='2002-05-01'</code> and <code>forms in ['8-K', '10-Q', '10-K']</code>, the <code>fdate</code> of 98.1% filings is on the same day or one day behind the <code>secadate</code>.</li>
+</ul>
+</div>
+        </div>
+    </div>
+<h2 id="rdq-is-good-but-it-has-no-time-component" class="headerLink">
+    <a href="#rdq-is-good-but-it-has-no-time-component" class="header-mark"></a>4 <code>RDQ</code> is good, but it has no time component</h2><p><code>RDQ</code>, the Report Date Quarterly, is described to be &ldquo;the date on which quarterly earnings per share are first publicly reported.&rdquo;</p>
+<p><code>RDQ</code> is accurate, I found 98% of <code>RDQ</code>s aggree with other data sources. However, the missing time component makes it <strong>impossible to accurately time the market response</strong>: If the earnings news is released before market close (4 pm ET), then day 0 is the release date; if news is released after 4 pm ET, then day 0 should be the next trading day! That would make a big difference since a significant portion of market response is on day 0.</p>
+<p>Sadly, <code>RDQ</code> doesn&rsquo;t tell us if the earnings news is releaed before or after the market close.</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>S&amp;P client support answers how RDQ is collected<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">RDQ in Compustat is collected as a blank field until the 10Q or the related Newswire is filed within SEC or a regulatory body if the preliminary news releases do not include earnings.</div>
+        </div>
+    </div>
+<h2 id="mostimportantdateutc-in-ciq-is-good-but-not-perfect" class="headerLink">
+    <a href="#mostimportantdateutc-in-ciq-is-good-but-not-perfect" class="header-mark"></a>5 <code>mostImportantDateUTC</code> in CIQ is good, but not perfect</h2><p><code>mostImportantDateUTC</code> from CIQ seems to track event more closely. From the same S&amp;P client support I learned that:</p>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">CIQ collects data from the announcement of the company websites, press releases or any publicly available source and companies either post it in their website first before it being available in SEC.</div>
+        </div>
+    </div>
+<p>So theoretically CIQ can recored events before it&rsquo;s officially released by EDGAR. Sounds good, right?</p>
+<p>Unfortunately, <code>mostImportantDateUTC</code> has a three drawbacks:<a name="floor-issue"></a></p>
+<ul>
+<li>
+<p><strong>The time component of some events are missing</strong></p>
+<p>In 25.6% of the case, the datetime will be something like &lsquo;2008-09-01 00:00:00&rsquo;, where the &lsquo;00:00:00&rsquo; indicates CIQ only records the date.</p>
+</li>
+<li>
+<p><strong>It&rsquo;s floored to the minute</strong></p>
+<p>I check the whole CIQ database and find the &ldquo;second&rdquo; component are all zero. That means if the true event time is &ldquo;17:30:43&rdquo;, CIQ will floor it to &ldquo;17:30:00&rdquo;.</p>
+</li>
+<li>
+<p><strong>It&rsquo;s not necessarily the &ldquo;earliest&rdquo; timestamp</strong></p>
+<p>After comparing to RavenPack, I found <code>mostImportDateUTC</code> is not always the earliest timestamp. There&rsquo;re many cases where the earliest news article in RP is earlier than CIQ.</p>
+</li>
+</ul>
+<p>As a summary, if you don&rsquo;t want to bother with digging the RavenPack data, I suggest you use CIQ in the following way:</p>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>How to use CIQ (`mostImportantDateUTC`) smartly<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><ul>
+<li>
+<p>If the time component of <code>mostImportantDateUTC</code> is <strong>zero</strong> (e.g., &lsquo;2001-01-01 00:00:00&rsquo;), then treat <code>mostImportantDateUTC</code> as if it&rsquo;s in Eastern Time (i.e., &lsquo;2001-01-01 UTC&rsquo; becomes &lsquo;2001-01-01 ET&rsquo;).</p>
+</li>
+<li>
+<p>If it does has a <strong>none-zero</strong> time component (e.g., &lsquo;2001-01-01 12:03:00&rsquo;), converting <code>mostImportantDateUTC</code> to ET is safe and recommended (i.e., &lsquo;2001-01-01 12:03:00 UTC&rsquo; becomes &lsquo;2001-01-01 07:03:00 EST&rsquo;).</p>
+</li>
+</ul>
+</div>
+        </div>
+    </div>
+<h2 id="combine-ravenpack-and-capital-iq" class="headerLink">
+    <a href="#combine-ravenpack-and-capital-iq" class="header-mark"></a>6 Combine RavenPack and Capital IQ</h2><p>All news articles in RavenPack are timed to the milliseconds. This makes RP a perfect source for the timing of earnings event. However, since RP focuses on news articles, it&rsquo;s possible that some events may <em>not</em> be covered by any news media. In addition, RP is big, with one year&rsquo;s data over 200GB, and its taxonomy on earnings events are very complex (there&rsquo;re &gt;20 event types that are all about earnings). This makes matching RP to other databases very difficult.</p>
+<p>So your best shot is to join the merits of both: supplement CIQ with RavenPack. The general idea is:</p>
+<div class="details admonition important">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw"></i>If we can find an earlier timestamp in RP, then we use RP; otherwise, we stick with CIQ.<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"></div>
+        </div>
+    </div>
+<p><strong>On average, 54% of CIQ timestamps can be improved by RavenPack.</strong></p>
+<h3 id="the-logic-of-code" class="headerLink">
+    <a href="#the-logic-of-code" class="header-mark"></a>6.1 The logic of code</h3><p>Combining RP with CIQ is not easy. I first present the logic of the code (so you can implement with other languages) and in the next section, I provide an R example.</p>
+<p><strong>Step 1: Split CIQ</strong></p>
+<ul>
+<li>You start with a table called <code>ciq</code>. This could be the raw &ldquo;Key Development&rdquo; table in CIQ or any cleaned table. The only requirement is that each line of <code>ciq</code> represents <strong>one earnings event</strong>. The most important column in <code>ciq</code> would be <code>mostImportantDateUTC</code> &ndash; the event timestamp provided by CIQ.</li>
+<li>Split table <code>ciq</code> into two tables according to if <code>mostImportantDateUTC</code> has a time component or not: table <code>ciqd</code> if <code>mostImportantDateUTC</code> only has the date component, and table <code>ciqdt</code> if it has both a date and a time component.</li>
+</ul>
+<p><strong>Step 2: Process <code>ciqd</code></strong></p>
+<ul>
+<li>
+<p>Since there&rsquo;s no time component, we&rsquo;ll create a default one. It equals to the last second of the <code>RDQ</code> day. That is, if <code>RDQ</code> is <code>2001-01-01</code>, the default timestamp would be <code>2001-01-01 23:59:59</code>.</p>
+</li>
+<li>
+<p>Join <code>ciqd</code> to the RavenPack table: <strong>For every earnings event in <code>ciqd</code>, we query the previous 2 days in RP</strong>. If we can find a match, then we update the event time from the default (23:59:59) to the RP timestamp.</p>
+</li>
+</ul>
+<p><strong>Step 3: Process <code>ciqdt</code></strong></p>
+<ul>
+<li>
+<p>For each event in <code>ciqdt</code>, <strong>query the previous 12 hours in RP</strong>. If there&rsquo;s a match, label the retrived RP timestamp as <code>&quot;match_prev&quot;</code>.</p>
+</li>
+<li>
+<p>Similarly for the same event, <strong>query the next 60s in RP</strong>. Label the retrieved RP timestamp as <code>&quot;match_next&quot;</code>. This step is to deal with the <a href="#floor-issue" rel="">&ldquo;flooring second&rdquo; issue</a>.</p>
+</li>
+<li>
+<p>Now each event in <code>ciqdt</code> has three status depending on what type of RP timestamp it successfully retrieved:</p>
+<ul>
+<li>
+<p>Failed to match any RP timestamp. We then use the CIQ timestamp (<code>mostImportantDateUTC</code>) as the event time.</p>
+</li>
+<li>
+<p>At least matches to one <code>&quot;match_prev&quot;</code> timestamp (also including the case where it matches to both <code>&quot;match_prev&quot;</code> and <code>&quot;match_next&quot;</code> timestamps). This means we successfully find an &ldquo;earlier&rdquo; timestamp in RP. We then use the <code>&quot;match_prev&quot;</code> timestamp as the event time.</p>
+</li>
+<li>
+<p>Only matches to a <code>&quot;match_next&quot;</code> timestamp. This means the CIQ timestamp is earlier than any other media by no more than 60 seconds. It&rsquo;s a indicator of the <a href="#floor-issue" rel="">&ldquo;flooring issue.&rdquo;</a> In this case, we use the <code>&quot;match_next&quot;</code> timestamp.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 4: Combine <code>ciqd</code> and <code>ciqdt</code></strong></p>
+<h3 id="r-code" class="headerLink">
+    <a href="#r-code" class="header-mark"></a>6.2 R Code</h3><p>The R code is <em>not</em> fully reproducible since I omitted hundreds of lines of data cleaning code. But the main logic is untouched.</p>
+<p>I relied heaveily on the <code>data.table</code> package: you&rsquo;ll write way more lines of code if you use its competitors like <code>dplyr</code> or <code>pandas</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">data.table</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">hms</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ---- Define the tables and columns we&#39;ll use ----</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - ciq: This could be the raw &#34;Key Development&#34; table in CIQ or any cleaned table. </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#        The only requirement is that each line of `ciq` represents *one earnings event*. </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#        The most important column in `ciq` would be `ciq_ann_dttm_utc` -- the event timestamp </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#        provided by CIQ (it&#39;s just a rename of `mostImportantDateUTC).</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - rp:  The RavenPack table. Each line is an &#34;event&#34; (see the RP manuals for how RP defines an</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#        entity and an event)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Example of ciq:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#     gvkey rp_entity_id        rdq    ciq_ann_dttm_utc</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 1: 014535       BDE867 2021-05-07 2021-05-07 11:30:00</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Example of rp:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    rp_entity_id                      rp_story_id         rp_dttm_utc  source_name</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 1:       D502AB E75346353C34D9DA358AB6F344108EF9 2007-12-21 13:07:59  Canadian News Wire</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ---- Step 1: split ciq into two tables ----</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ciqd: only has date information (74%)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ciqdt: has both date and time information (26%)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqd</span> <span class="o">=</span> <span class="n">ciq</span><span class="nf">[as_hms</span><span class="p">(</span><span class="n">ciq_ann_dttm_utc</span><span class="p">)</span><span class="o">==</span><span class="m">0</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt</span> <span class="o">=</span> <span class="n">ciq</span><span class="nf">[as_hms</span><span class="p">(</span><span class="n">ciq_ann_dttm_utc</span><span class="p">)</span><span class="o">!=</span><span class="m">0</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">dobs</span><span class="p">(</span><span class="n">ciqdt</span><span class="p">,</span> <span class="n">ciqd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ---- Step 2: Process ciqd ----</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># assign default timestamp: 23:59:59 on RDQ day</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqd[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="nf">as_datetime</span><span class="p">(</span><span class="n">rdq</span><span class="p">,</span> <span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">+</span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">as_hms</span><span class="p">(</span><span class="s">&#39;23:59:59&#39;</span><span class="p">)))</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ciqd_rp_1</span> <span class="o">=</span> <span class="n">rp[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># query previous 2 days</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][ciqd</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">on</span><span class="o">=</span><span class="n">.(rp_entity_id</span><span class="p">,</span> <span class="n">joindttm</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="n">roll</span><span class="o">=</span><span class="m">2</span><span class="o">*</span><span class="m">24</span><span class="o">*</span><span class="m">3600</span><span class="p">,</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NULL</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># headlines should not include &#34;to report&#34; -- these news are </span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># not the actually earnings results, but just a notification that</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># the company will release earnings soon.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="o">!</span><span class="nf">str_detect</span><span class="p">(</span><span class="n">headline</span><span class="p">,</span> <span class="nf">regex</span><span class="p">(</span><span class="s">&#39;to report&#39;</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="bp">T</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># keep the earliest RP timestamp</span>
+</span></span><span class="line"><span class="cl">    <span class="n">]</span><span class="nf">[order</span><span class="p">(</span><span class="n">gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.SD[1]</span><span class="p">,</span> <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">,</span> <span class="n">rp_story_id</span><span class="p">,</span> <span class="n">headline</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># merge ciqd_rp back to ciq</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqd_rp_2</span> <span class="o">=</span> <span class="n">ciqd_rp_1[ciqd</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">),</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NA</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ---- step 3: Match ciqdt ----</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># query previous 3 hours</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_locf</span> <span class="o">=</span> <span class="n">rp[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># search for the previous 3 hours in RP</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][ciqdt[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="n">ciq_ann_dttm_utc</span><span class="p">)</span><span class="n">]</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">on</span><span class="o">=</span><span class="n">.(rp_entity_id</span><span class="p">,</span> <span class="n">joindttm</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="n">roll</span><span class="o">=</span><span class="m">3</span><span class="o">*</span><span class="m">3600</span><span class="p">,</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NULL</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># keep the earliest RP timestamp</span>
+</span></span><span class="line"><span class="cl">    <span class="n">]</span><span class="nf">[order</span><span class="p">(</span><span class="n">gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.SD[1]</span><span class="p">,</span> <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">,</span> <span class="n">rp_story_id</span><span class="p">,</span> <span class="n">headline</span><span class="p">,</span> <span class="n">jointype</span><span class="o">=</span><span class="s">&#39;match_prev&#39;</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># query next 60 seconds</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_nocb</span> <span class="o">=</span> <span class="n">rp[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># search for the next 60 seconds (to deal with the flooring issue)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][ciqdt[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="n">ciq_ann_dttm_utc</span><span class="p">)</span><span class="n">]</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">on</span><span class="o">=</span><span class="n">.(rp_entity_id</span><span class="p">,</span> <span class="n">joindttm</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="n">roll</span><span class="o">=</span><span class="m">-60</span><span class="p">,</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NULL</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># keep the earliest RP timestamp</span>
+</span></span><span class="line"><span class="cl">    <span class="n">]</span><span class="nf">[order</span><span class="p">(</span><span class="n">gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.SD[1]</span><span class="p">,</span> <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">,</span> <span class="n">rp_story_id</span><span class="p">,</span> <span class="n">headline</span><span class="p">,</span> <span class="n">jointype</span><span class="o">=</span><span class="s">&#39;match_next&#39;</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># combine results</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_1</span> <span class="o">=</span> <span class="nf">rbindlist</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">ciqdt</span><span class="p">,</span> <span class="n">ciqdt_rp_locf</span><span class="p">,</span> <span class="n">ciq_rpdt_nocb</span><span class="p">),</span> <span class="n">use.names</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="bp">T</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_1</span> <span class="o">=</span> <span class="n">ciqdt_rp_1[</span><span class="o">!</span><span class="nf">str_detect</span><span class="p">(</span><span class="n">headline</span><span class="p">,</span> <span class="nf">regex</span><span class="p">(</span><span class="s">&#39;to report&#39;</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="bp">T</span><span class="p">)),</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">,</span> <span class="n">rp_story_id</span><span class="p">,</span> <span class="n">headline</span><span class="p">,</span> <span class="n">jointype</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># determine which RP timestamp to use</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_2</span> <span class="o">=</span> <span class="n">ciqdt_rp_1</span><span class="nf">[order</span><span class="p">(</span><span class="n">gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">jointype</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># if no match, keep original CIQ timestamp</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">if </span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">jointype</span><span class="p">)))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out</span> <span class="o">=</span> <span class="n">.SD[1]</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># if at least matches to one earlier news article in RP,</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># use the RP timestamp</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="n">else</span> <span class="nf">if </span><span class="p">(</span><span class="s">&#39;match_prev&#39;</span> <span class="o">%in%</span> <span class="n">jointype</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out</span> <span class="o">=</span> <span class="n">.SD[jointype</span><span class="o">==</span><span class="s">&#39;match_prev&#39;</span><span class="n">][1]</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># if only matches to a RP timestamp no later than 60s, </span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># use the RP timestamp</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="n">else</span> <span class="nf">if </span><span class="p">(</span><span class="s">&#39;match_next&#39;</span> <span class="o">%in%</span> <span class="n">jointype</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out</span> <span class="o">=</span> <span class="n">.SD[jointype</span><span class="o">==</span><span class="s">&#39;match_next&#39;</span><span class="n">][1]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">out</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">,</span> <span class="n">rp_dttm_utc</span><span class="p">,</span> <span class="n">rp_story_id</span><span class="p">,</span> <span class="n">headline</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="c1"># merge ciqdt_rp back to ciq</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_3</span> <span class="o">=</span> <span class="n">ciqdt_rp_2[ciqdt</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">rdq</span><span class="p">),</span> <span class="n">nomatch</span><span class="o">=</span><span class="kc">NA</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">joindttm</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># if rp_dttm_utc and ciq_ann_dttm_utc are the same, then </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># assign rp_dttm_utc a NA</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># in the final dataset:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - 45% failed to match any RP or CIQ and RP have the same timestamp</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - 27% RP is later than CIQ (the flooring issue)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - 28% RP is earlier than CIQ</span>
+</span></span><span class="line"><span class="cl"><span class="n">ciqdt_rp_3</span> <span class="o">=</span> <span class="n">ciqdt_rp_3[rp_dttm_utc</span><span class="o">==</span><span class="n">ciq_ann_dttm_utc</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">rp_dttm_utc</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="n">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The results:</p>
+<figure><a class="lightgallery" href="/nail-down-earnings-time/6.png" title="/nail-down-earnings-time/6.png" data-thumbnail="/nail-down-earnings-time/6.png" data-sub-html="<h2>The imporved timestamp</h2>">
+        <img
+            
+            loading="lazy"
+            src="6.png"
+            srcset="/nail-down-earnings-time/6.png, 6.png 1.5x, /nail-down-earnings-time/6.png 2x"
+            sizes="auto"
+            alt="/nail-down-earnings-time/6.png"width="400">
+    </a><figcaption class="image-caption">The imporved timestamp</figcaption>
+    </figure>
+<p>As you can see, in the first line, CIQ timestamp is <code>12:52:00</code> while the earliest RP timestamp is <code>12:32:08</code>.</p>
+</div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-01-26</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="#" title="Share on Twitter" data-sharer="twitter" data-url="https://hugodoit.pages.dev/nail-down-earnings-time/" data-title="Nailing down the earnings event time to the millisecond
+" data-hashtags="wrds,ravenpack"><i class="fab fa-twitter fa-fw"></i></a><a href="#" title="Share on Facebook" data-sharer="facebook" data-url="https://hugodoit.pages.dev/nail-down-earnings-time/" data-hashtag="wrds"><i class="fab fa-facebook-square fa-fw"></i></a><a href="#" title="Share on Hacker News" data-sharer="hackernews" data-url="https://hugodoit.pages.dev/nail-down-earnings-time/" data-title="Nailing down the earnings event time to the millisecond
+"><i class="fab fa-hacker-news fa-fw"></i></a><a href="#" title="Share on 微博" data-sharer="weibo" data-url="https://hugodoit.pages.dev/nail-down-earnings-time/" data-title="Nailing down the earnings event time to the millisecond
+"><i class="fab fa-weibo fa-fw"></i></a><a href="#" title="Share on Evernote" data-sharer="evernote" data-url="https://hugodoit.pages.dev/nail-down-earnings-time/" data-title="Nailing down the earnings event time to the millisecond
+"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/wrds/">wrds</a>,&nbsp;<a href="/tags/ravenpack/">ravenpack</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/accepted-date-not-match-edgar/" class="prev" rel="prev" title="The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+"><i class="fas fa-angle-left fa-fw"></i>The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+</a></div>
+</div>
+<div id="comments"><div id="twikoo"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://twikoo.js.org/">Twikoo</a>.
+            </noscript></div></article></div>
+        </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">
+                    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.110.0">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank" rel="noopener noreferrer" title="DoIt 0.2.13"><i class="far fa-edit fa-fw"></i> DoIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/XiaomoWu" target="_blank" rel="noopener noreferrer">Yu Zhu</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+            <div class="footer-line"></div>
+            <div class="footer-line">
+            </div>
+        </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div class="assets"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{"twikoo":{"el":"#twikoo","envId":"https://twikoo-xiaomowu.vercel.app/","lang":"en"}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":true,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":300,"threshold":0.1,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"twemoji":true};</script><script type="text/javascript" src="/lib/twikoo/twikoo.all.min.js" defer></script><script type="text/javascript" src="/js/twikoo.min.js" defer></script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js" defer></script><script type="text/javascript" src="/js/twemoji.min.js" defer></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script></div>
+</body>
+
+</html>

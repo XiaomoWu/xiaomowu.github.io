@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>35行代码搞定事件研究法（上） - </title><meta name="Description" content=""><meta property="og:title" content="35行代码搞定事件研究法（上）" />
+<meta property="og:description" content="摘自我的公众号文章" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" /><meta property="og:image" content="https://hugodoit.pages.dev/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-24T00:45:05-07:00" />
+<meta property="article:modified_time" content="2023-01-24T01:56:37-07:00" /><meta property="og:site_name" content="Yu.Z&#39;s Personal Site" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://hugodoit.pages.dev/logo.png"/>
+
+<meta name="twitter:title" content="35行代码搞定事件研究法（上）"/>
+<meta name="twitter:description" content="摘自我的公众号文章"/>
+<meta name="application-name" content="DoIt">
+<meta name="apple-mobile-web-app-title" content="DoIt">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "35行代码搞定事件研究法（上）",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/hugodoit.pages.dev\/zh-cn\/35-line-event-study\/"
+        },"genre": "posts","wordcount":  3173 ,
+        "url": "https:\/\/hugodoit.pages.dev\/zh-cn\/35-line-event-study\/","datePublished": "2023-01-24T00:45:05-07:00","dateModified": "2023-01-24T01:56:37-07:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/hugodoit.pages.dev\/images\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Yu Zhu"
+            },"description": ""
+    }
+    </script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) {document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark');}
+        function saveTheme(theme) {window.localStorage && localStorage.setItem('theme', theme);}
+        function getMeta(metaName) {const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return '';}
+        if (window.localStorage && localStorage.getItem('theme')) {let theme = localStorage.getItem('theme');theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light');}
+        let metaColors = {'light': '#f8f8f8','dark': '#252627','black': '#000000'}
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/zh-cn/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/zh-cn/posts/"> 研究笔记 </a><a class="menu-item" href="/zh-cn/series/"> 专题 </a><a class="menu-item" href="https://github.com/HEIGE-PCloud/DoIt" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="#" class="menu-item language" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" title="Select Language" id="language-select-desktop" onchange="location = this.value;"><option value="/zh-cn/35-line-event-study/" selected>简体中文</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="#" class="menu-item theme-select" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                    <select class="color-theme-select" id="theme-select-desktop" title="切换主题">
+                        <option value="light">浅色</option>
+                        <option value="dark">深色</option>
+                        <option value="black">黑色</option>
+                        <option value="auto">跟随系统</option>
+                    </select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/zh-cn/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="#" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/zh-cn/posts/" title="">研究笔记</a><a class="menu-item" href="/zh-cn/series/" title="">专题</a><a class="menu-item" href="https://github.com/HEIGE-PCloud/DoIt" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="#" class="menu-item theme-select" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+                <select class="color-theme-select" id="theme-select-mobile" title="切换主题">
+                    <option value="light">浅色</option>
+                    <option value="dark">深色</option>
+                    <option value="black">黑色</option>
+                    <option value="auto">跟随系统</option>
+                </select>
+            </a><a href="#" class="menu-item" title="选择语言">简体中文<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" title="Select Language" onchange="location = this.value;"><option value="/zh-cn/35-line-event-study/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+            <div class="container"><div class="toc" id="toc-auto">
+        <h2 class="toc-title">目录</h2>
+        <div class="toc-content" id="toc-content-auto"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#step-i截取收益率向量">Step I：截取收益率向量</a></li>
+    <li><a href="#step-ii估计模型计算超额收益率">Step II：估计模型，计算超额收益率</a></li>
+    <li><a href="#step-iii输出最终结果">Step III：输出最终结果</a></li>
+  </ul>
+</nav></div>
+    </div><script>document.getElementsByTagName("main")[0].setAttribute("pageStyle", "normal")</script><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC", "true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">35行代码搞定事件研究法（上）</h1><div class="post-meta">
+            <div class="post-meta-line">
+                <span class="post-author"><i class="author fas fa-user-circle fa-fw"></i><a href="https://github.com/XiaomoWu" title="Author" target="_blank" rel="noopener noreferrer author" class="author">Yu Zhu</a>
+                </span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2023-01-24">2023-01-24</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime="2023-01-24">2023-01-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3173 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#step-i截取收益率向量">Step I：截取收益率向量</a></li>
+    <li><a href="#step-ii估计模型计算超额收益率">Step II：估计模型，计算超额收益率</a></li>
+    <li><a href="#step-iii输出最终结果">Step III：输出最终结果</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>这期大猫课堂将会教大家如何用35行R代码写出最有效率的事件研究法。</p>
+<p>注意，本代码主要使用data.table完成，关于data.table包的相应知识会在涉及的时候进行讲解。在以后的课堂中，我们会重点介绍data.table这个包。</p>
+<h1 id="事件研究法的基本过程" class="headerLink">
+    <a href="#%e4%ba%8b%e4%bb%b6%e7%a0%94%e7%a9%b6%e6%b3%95%e7%9a%84%e5%9f%ba%e6%9c%ac%e8%bf%87%e7%a8%8b" class="header-mark"></a>事件研究法的基本过程</h1><p>首先，我们先来回顾一下事件研究法的基本过程：</p>
+<p><a class="lightgallery" href="/zh-cn/35-line-event-study/images/1.jpeg" title="/zh-cn/35-line-event-study/images/1.jpeg" data-thumbnail="/zh-cn/35-line-event-study/images/1.jpeg">
+        <img
+            
+            loading="lazy"
+            src="images/1.jpeg"
+            srcset="/zh-cn/35-line-event-study/images/1.jpeg, images/1.jpeg 1.5x, /zh-cn/35-line-event-study/images/1.jpeg 2x"
+            sizes="auto"
+            alt="/zh-cn/35-line-event-study/images/1.jpeg">
+    </a></p>
+<p>根据上图，T日是事件日，事件研究法的目的是计算事件日前后若干日超额收益（CAR）之和，而超额收益的定义为该股当日收益减去模型收益之差。如果我们用C1与C2标记CAR窗口期，用M1与M2标记模型的估计期（C1、C2、M1、M2都为正数，定义见上图），则上图的含义为：</p>
+<p>在 [T - M1, T - M2] 的区间内估计市场模型，并在 [T - C1, T + C2] 的区间内计算超额收益率。</p>
+<p>在这里，我们姑且用最简单的市场模型来估计收益，即：</p>
+<p>r = alpha + beta * (r - rm)</p>
+<p>其中，r 表示个股每日的收益率，rm 表示对应日期市场指数的收益率。</p>
+<h1 id="样例数据集" class="headerLink">
+    <a href="#%e6%a0%b7%e4%be%8b%e6%95%b0%e6%8d%ae%e9%9b%86" class="header-mark"></a>样例数据集</h1><p>一切没有栗子的讲解都是耍流氓，现在我们就假设需要对如下数据集运用事件研究法：</p>
+<p><a class="lightgallery" href="/zh-cn/35-line-event-study/images/2.jpg" title="/zh-cn/35-line-event-study/images/2.jpg" data-thumbnail="/zh-cn/35-line-event-study/images/2.jpg">
+        <img
+            
+            loading="lazy"
+            src="images/2.jpg"
+            srcset="/zh-cn/35-line-event-study/images/2.jpg, images/2.jpg 1.5x, /zh-cn/35-line-event-study/images/2.jpg 2x"
+            sizes="auto"
+            alt="/zh-cn/35-line-event-study/images/2.jpg">
+    </a></p>
+<p>其中，stk.id表示股票代码，date是日期，r表示个股收益率，rm表示市场收益率，event.flg是事件日标识。如果当天不是事件日，event.flg为0，否则为1。（似乎莫名其妙立了flag……）由上图可知，只有在第30行发生了事件（用红框框出）。</p>
+<p>不妨进一步假设C1 = C2 = 1, M1 = 10, M2 = 5。也即我们的CAR窗口期为 [T - 1, T + 1]，模型的估计期为[T - 10, T - 5]。当然那么短的模型估计期（5天）是非常不现实的，这里仅为了举例方便这样设定。</p>
+<h1 id="举一个详细的栗子" class="headerLink">
+    <a href="#%e4%b8%be%e4%b8%80%e4%b8%aa%e8%af%a6%e7%bb%86%e7%9a%84%e6%a0%97%e5%ad%90" class="header-mark"></a>举一个详细的栗子</h1><p>OK，既然栗子也有了，我们就要正式开工啦。本着从特殊到一般的原则，在这一讲中，我们首先假设现在只有一个事件日。针对这一个事件日，大猫会给出一个叫做 do_car() 的自定义函数计算其对应的超额收益。当以后出现多个事件日时，我们只要对每个事件日都调用一次 do_car() 函数就可以了。</p>
+<p>这种“先把任务分解为任务单元，为每个任务单元写一个函数，然后再批量调用函数”的方法，希望大家好好掌握哦！</p>
+<p>既然我们的目标是写一个函数 do_car()，那么其肯定有参数。为了计算超额收益，我们需要以下四个输入变量：1）个股收益向量 r， 2）市场收益向量 rm，3）日期向量，4）事件日发生的序号 n。因此这个 do_car() 大致会长这个样子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">do_car</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rm</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="p">{</span><span class="kc">...</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>那么如何把函数的主体填充进去，从而计算单个事件日对应的超额收益呢？大猫给出以下三个步骤：</p>
+<p>Step I. 先定位事件日，然后根据给定的参数分别截取出模型估计期 [T - 10, T - 5] 以及CAR窗口期 [T - 1, T + 1] 的收益率 r、rm</p>
+<p>Step II. 根据模型估计期的 r 与 rm 数据估计收益率模型的参数 alpha，beta，并计算超额收益率</p>
+<p>Step III. 输出最终结果</p>
+<h2 id="step-i截取收益率向量" class="headerLink">
+    <a href="#step-i%e6%88%aa%e5%8f%96%e6%94%b6%e7%9b%8a%e7%8e%87%e5%90%91%e9%87%8f" class="header-mark"></a>1 Step I：截取收益率向量</h2><p>我们用n来标记事件日的序号。例如在我们的例子中，第30天发生了事件，因而n=30。需要注意的是在我们的例子中 n 是一个标量，下节课中我们会把n拓展为向量，也即引入多个事件日。</p>
+<p>确定了事件日序号之后，我们就可以用他来截取收益率向量了。模型估计期的个股收益向量为 r[n - m2, n - m1]，（n - m2表示截取起点，n - m1表示截取的终点），我们将其命名为 r.model。同理，模型估计期对应的市场收益率的向量为 rm[n - m2, n - m1]，我们将其命名为 rm.model。类似的，我们可以分别截取出CAR窗口期的收益率向量。代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">i1</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">-</span> <span class="n">m1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">i2</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">-</span> <span class="n">m2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">i3</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">-</span> <span class="n">c1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">i4</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">+</span> <span class="n">c2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">r.model</span> <span class="o">&lt;-</span> <span class="n">r[i1</span><span class="o">:</span><span class="n">i2]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">rm.model</span> <span class="o">&lt;-</span> <span class="n">rm[i1</span><span class="o">:</span><span class="n">i2]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">r.car</span> <span class="o">&lt;-</span> <span class="n">r[i3</span><span class="o">:</span><span class="n">i4]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">rm.car</span> <span class="o">&lt;-</span> <span class="n">rm[i3</span><span class="o">:</span><span class="n">i4]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中，r 表示个股收益，rm 表示市场收益，后缀model表示模型估计期，后缀car表示CAR窗口期。</p>
+<h2 id="step-ii估计模型计算超额收益率" class="headerLink">
+    <a href="#step-ii%e4%bc%b0%e8%ae%a1%e6%a8%a1%e5%9e%8b%e8%ae%a1%e7%ae%97%e8%b6%85%e9%a2%9d%e6%94%b6%e7%9b%8a%e7%8e%87" class="header-mark"></a>2 Step II：估计模型，计算超额收益率</h2><p>得到了r.model, rm.model 这两个变量，我们就可以进行收益模型的估计了。我们使用R内置的多元线性回归函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">model</span> <span class="o">&lt;-</span> <span class="nf">lm</span><span class="p">(</span><span class="n">r.model</span> <span class="o">~</span> <span class="nf">I</span><span class="p">(</span><span class="n">r.model</span> <span class="o">-</span> <span class="n">rm.model</span><span class="p">))</span><span class="o">&gt;</span> <span class="n">coef</span> <span class="o">&lt;-</span> <span class="nf">coef</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ars</span> <span class="o">&lt;-</span> <span class="n">r.car</span> <span class="o">-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nf">list</span><span class="p">(</span><span class="n">r.model</span> <span class="o">=</span> <span class="n">r.car</span><span class="p">,</span> <span class="n">rm.model</span> <span class="o">=</span> <span class="n">rm.car</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>先来看第一行。其中，lm是回归函数，“~”符号左边的是因变量r.model，右边的是自变量 I(r.model - rm.model)，最后得到的回归模型命名为“model”。R默认回归中有常数项，因而在公式中不需要显式表示。另外，函数I()表示要把r.model - rm.model的结果作为一个变量来看待。</p>
+<p>再来看第二行。要知道在R中，线性回归的结果是一个类名为“lm”的对象，这个对象包含了回归结果的系数、p值、残差等等元素。而coef()函数的作用就是提取回归结果的系数。</p>
+<p>最后看第三行。这一行的作用是用估计得到的模型预测CAR窗口期股票的收益率。predict()函数用来预测模型。第一个参数model指出了预测所依据的模型（就是我们上面估计得到的model），第二个参数指定了自变量，其中“r.model = r.car”表示把model中的r.model变量用r.car变量代替，类似的，&ldquo;rm.model = rm.car&quot;表示把model中的rm.model变量替换成rm.car。最后，我们用股票的实际收益率（r.car）减去由模型计算得到的收益率（predict()函数计算的结果），就能得到股票的超额收益（ars, abnormal returns）。需要注意的是，刚才提到的ars, r.car, r.model等变量都是向量，而不是标量。</p>
+<h2 id="step-iii输出最终结果" class="headerLink">
+    <a href="#step-iii%e8%be%93%e5%87%ba%e6%9c%80%e7%bb%88%e7%bb%93%e6%9e%9c" class="header-mark"></a>3 Step III：输出最终结果</h2><p>得到了超额收益率向量ars，我们需要确定最终输出的结果应该是什么样子。一般来说，对于每一个事件日（非事件日我们不输出结果），我们需要保留股票代码stk.id、事件日date、该事件日对应的收益率模型系数coef，以及该事件日窗口期间的超额收益。因此最终输出结果应该大致长下面这个样子：</p>
+<p><a class="lightgallery" href="/zh-cn/35-line-event-study/images/3.jpg" title="/zh-cn/35-line-event-study/images/3.jpg" data-thumbnail="/zh-cn/35-line-event-study/images/3.jpg">
+        <img
+            
+            loading="lazy"
+            src="images/3.jpg"
+            srcset="/zh-cn/35-line-event-study/images/3.jpg, images/3.jpg 1.5x, /zh-cn/35-line-event-study/images/3.jpg 2x"
+            sizes="auto"
+            alt="/zh-cn/35-line-event-study/images/3.jpg">
+    </a></p>
+<p>关于上面这个输出结果，有以下三点需要注意：</p>
+<ol>
+<li>
+<p>图中每一行都对应一个事件日，非事件日不输出结果。上图中说明6月17日发生了一个事件。</p>
+</li>
+<li>
+<p>ars是超额收益率向量，因为我们的例子中把超额收益率区间定为 T 日前后各一天，因此 ars 共有三个元素。注意，我们这里没有直接输出加总后的CAR，而是输出超额收益向量ars。这是因为输出超额收益向量便于我们后期进行各种复杂的计算。</p>
+</li>
+<li>
+<p>coef、ars都是向量</p>
+</li>
+</ol>
+<p>这一步对应的代码是：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="nf">list</span><span class="p">(</span><span class="n">date</span> <span class="o">=</span> <span class="n">date[n]</span><span class="p">,</span> <span class="n">coef</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">coef</span><span class="p">),</span> <span class="n">ars</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">ars</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这一行代码指定了我们需要输出的三个变量：事件日、收益率模型系数以及超额收益。其中，coef = list(coef)的含义是把向量coef打包成一个list类型的变量，并命名为coef。date = date[n]的含义是选取date变量的第n个元素（也就是事件日），并命名为date。最外面的list()则把其中的三个元素打包成一个大的list。值得一提的是，我们在这里运用了把向量打包成list的这个小技巧，这一技巧在进行回归计算时非常有用，其作用以及应用场景将会在以后详细讲述。现在只要知道它用来输出结果就可以了。</p>
+<p>将step I ~ III 归纳为函数</p>
+<p>把 step I 至 step III 归纳成函数的话就是：已知个股收益率向量r、市场收益率向量rm、日期向量date，以及事件日的序号n（标量），我们就可以用以下函数计算对应事件日的超额收益率向量ars——</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="n">do_car</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rm</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nf">stopifnot</span><span class="p">(</span><span class="n">m1</span> <span class="o">&gt;</span> <span class="n">m2</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="nf">if </span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">m1</span> <span class="o">&lt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;n =&#34;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s">&#34;is too small \n&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">else</span> <span class="nf">if </span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">&gt;</span> <span class="nf">length</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;n =&#34;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="s">&#34;is too large \n&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">else</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">i1</span> <span class="o">&lt;-</span> <span class="nf">max</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">m1</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">i2</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">-</span> <span class="n">m2</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">i3</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">-</span> <span class="n">c1</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">i4</span> <span class="o">&lt;-</span> <span class="n">n</span> <span class="o">+</span> <span class="n">c2</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">r.model</span> <span class="o">&lt;-</span> <span class="n">r[i1</span><span class="o">:</span><span class="n">i2]</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">rm.model</span> <span class="o">&lt;-</span> <span class="n">rm[i1</span><span class="o">:</span><span class="n">i2]</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">r.car</span> <span class="o">&lt;-</span> <span class="n">r[i3</span><span class="o">:</span><span class="n">i4]</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">rm.car</span> <span class="o">&lt;-</span> <span class="n">rm[i3</span><span class="o">:</span><span class="n">i4]</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">model</span> <span class="o">&lt;-</span> <span class="nf">lm</span><span class="p">(</span><span class="n">r.model</span> <span class="o">~</span> <span class="nf">I</span><span class="p">(</span><span class="n">r.model</span> <span class="o">-</span> <span class="n">rm.model</span><span class="p">))</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">coef</span> <span class="o">&lt;-</span> <span class="nf">coef</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">ars</span> <span class="o">&lt;-</span> <span class="n">r.car</span> <span class="o">-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nf">list</span><span class="p">(</span><span class="n">r.model</span> <span class="o">=</span> <span class="n">r.car</span><span class="p">,</span> <span class="n">rm.model</span> <span class="o">=</span> <span class="n">rm.car</span><span class="p">))</span> 
+</span></span><span class="line"><span class="cl">        <span class="nf">list</span><span class="p">(</span><span class="n">date</span> <span class="o">=</span> <span class="n">date[n]</span><span class="p">,</span> <span class="n">coef</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">coef</span><span class="p">),</span> <span class="n">ars</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">ars</span><span class="p">))</span> <span class="p">}}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中，(n - m1 &lt; 0)以及(n + c2 &gt; length(r)) 这两条语句的作用是：如果事件日出现在收益率向量的太前面或者太后面，以至于向前向后追溯无法满足估计模型或者CAR窗口期的要求，那么该事件日将被剔除。</p>
+<p>下期预告</p>
+<p>至此，我们已经学会如何针对单一事件日计算超额收益了。然而现实生活中我们往往要计算多个股票多个事件日的超额收益，这时应该怎么做？小伙伴们不用担心，其实只需要添加几行代码就可以了。具体做法，就请期待下一次的大猫课堂——35行代码搞定事件研究法（下）</p>
+</div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-01-24</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="#" title="分享到 Twitter" data-sharer="twitter" data-url="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" data-title="35行代码搞定事件研究法（上）"><i class="fab fa-twitter fa-fw"></i></a><a href="#" title="分享到 Facebook" data-sharer="facebook" data-url="https://hugodoit.pages.dev/zh-cn/35-line-event-study/"><i class="fab fa-facebook-square fa-fw"></i></a><a href="#" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" data-title="35行代码搞定事件研究法（上）"><i class="fab fa-hacker-news fa-fw"></i></a><a href="#" title="分享到 微博" data-sharer="weibo" data-url="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" data-title="35行代码搞定事件研究法（上）"><i class="fab fa-weibo fa-fw"></i></a><a href="#" title="分享到 Evernote" data-sharer="evernote" data-url="https://hugodoit.pages.dev/zh-cn/35-line-event-study/" data-title="35行代码搞定事件研究法（上）"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/zh-cn/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+<div id="comments"><div id="twikoo"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://twikoo.js.org/">Twikoo</a>.
+            </noscript></div></article></div>
+        </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">
+                    由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.110.0">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank" rel="noopener noreferrer" title="DoIt 0.2.13"><i class="far fa-edit fa-fw"></i> DoIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/XiaomoWu" target="_blank" rel="noopener noreferrer">Yu Zhu</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+            <div class="footer-line"></div>
+            <div class="footer-line">
+            </div>
+        </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="回到顶部">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div class="assets"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"twikoo":{"el":"#twikoo","envId":"https://twikoo-xiaomowu.vercel.app/","lang":"zh-cn"}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/zh-cn/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":true,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":50,"threshold":0.1,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"twemoji":true};</script><script type="text/javascript" src="/lib/twikoo/twikoo.all.min.js" defer></script><script type="text/javascript" src="/js/twikoo.min.js" defer></script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js" defer></script><script type="text/javascript" src="/js/twemoji.min.js" defer></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script></div>
+</body>
+
+</html>

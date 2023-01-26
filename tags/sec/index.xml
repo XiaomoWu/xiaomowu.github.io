@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>sec - Tag - </title>
+        <link>https://hugodoit.pages.dev/tags/sec/</link>
+        <description>sec - Tag - </description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>yu.zhu@utah.edu (Yu Zhu)</managingEditor>
+            <webMaster>yu.zhu@utah.edu (Yu Zhu)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 25 Jan 2023 16:17:52 -0700</lastBuildDate><atom:link href="https://hugodoit.pages.dev/tags/sec/" rel="self" type="application/rss+xml" /><item>
+    <title>The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+</title>
+    <link>https://hugodoit.pages.dev/accepted-date-not-match-edgar/</link>
+    <pubDate>Wed, 25 Jan 2023 16:17:52 -0700</pubDate><author>
+        <name>Yu Zhu</name>
+    </author><guid>https://hugodoit.pages.dev/accepted-date-not-match-edgar/</guid>
+    <description><![CDATA[The issue and my conversation with WRDS]]></description>
+</item></channel>
+</rss>

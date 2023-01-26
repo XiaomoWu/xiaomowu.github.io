@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>The correct way to use CCM - </title><meta name="Description" content="Yu Zhu&#39;s Personal Site"><meta property="og:title" content="The correct way to use CCM" />
+<meta property="og:description" content="WRDS provides multiple CCM tables, which one should you use?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hugodoit.pages.dev/how-to-use-ccm/" /><meta property="og:image" content="https://hugodoit.pages.dev/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-24T17:57:41-07:00" />
+<meta property="article:modified_time" content="2023-01-25T19:31:41-07:00" /><meta property="og:site_name" content="Yu.Z&#39;s Personal Site" />
+<meta property="og:see_also" content="https://hugodoit.pages.dev/nail-down-earnings-time/" /><meta property="og:see_also" content="https://hugodoit.pages.dev/accepted-date-not-match-edgar/" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://hugodoit.pages.dev/logo.png"/>
+
+<meta name="twitter:title" content="The correct way to use CCM"/>
+<meta name="twitter:description" content="WRDS provides multiple CCM tables, which one should you use?"/>
+<meta name="application-name" content="YZ&#39;s Site">
+<meta name="apple-mobile-web-app-title" content="YZ&#39;s Site">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://hugodoit.pages.dev/how-to-use-ccm/" /><link rel="prev" href="https://hugodoit.pages.dev/foverlap-and-roll/" /><link rel="next" href="https://hugodoit.pages.dev/accepted-date-not-match-edgar/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The correct way to use CCM",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/hugodoit.pages.dev\/how-to-use-ccm\/"
+        },"genre": "posts","keywords": "wrds, crsp","wordcount":  486 ,
+        "url": "https:\/\/hugodoit.pages.dev\/how-to-use-ccm\/","datePublished": "2023-01-24T17:57:41-07:00","dateModified": "2023-01-25T19:31:41-07:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/hugodoit.pages.dev\/images\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Yu Zhu"
+            },"description": ""
+    }
+    </script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) {document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark');}
+        function saveTheme(theme) {window.localStorage && localStorage.setItem('theme', theme);}
+        function getMeta(metaName) {const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return '';}
+        if (window.localStorage && localStorage.getItem('theme')) {let theme = localStorage.getItem('theme');theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light');}
+        let metaColors = {'light': '#f8f8f8','dark': '#252627','black': '#000000'}
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Research Blogs </a><a class="menu-item" href="/series/"> Series </a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="#" class="menu-item language" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                        <select class="language-select" title="Select Language" id="language-select-desktop" onchange="location = this.value;"><option value="/how-to-use-ccm/" selected>English</option></select>
+                    </a><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="#" class="menu-item theme-select" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw"></i>
+                    <select class="color-theme-select" id="theme-select-desktop" title="Switch Theme">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="black">Black</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title=""><span class="header-title-pre"><i class='far fa-edit fa-fw'></i></span>Yu.Z</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="#" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="#" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="#" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Research Blogs</a><a class="menu-item" href="/series/" title="">Series</a><a class="menu-item" href="https://github.com/XiaomoWu" title="GitHub" rel="noopener noreferrer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="#" class="menu-item theme-select" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw"></i>
+                <select class="color-theme-select" id="theme-select-mobile" title="Switch Theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="black">Black</option>
+                    <option value="auto">Auto</option>
+                </select>
+            </a><a href="#" class="menu-item" title="Select Language">English<i class="fas fa-chevron-right fa-fw"></i>
+                    <select class="language-select" title="Select Language" onchange="location = this.value;"><option value="/how-to-use-ccm/" selected>English</option></select>
+                </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+            <div class="container"><div class="toc" id="toc-auto">
+        <h2 class="toc-title">Contents</h2>
+        <div class="toc-content" id="toc-content-auto"><nav id="TableOfContents"></nav></div>
+    </div><script>document.getElementsByTagName("main")[0].setAttribute("pageStyle", "normal")</script><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC", "true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">The correct way to use CCM</h1><div class="post-meta">
+            <div class="post-meta-line">
+                <span class="post-author"><i class="author fas fa-user-circle fa-fw"></i><a href="https://github.com/XiaomoWu" title="Author" target="_blank" rel="noopener noreferrer author" class="author">Yu Zhu</a>
+                </span>&nbsp;<span class="post-category">included in </span>&nbsp;<span class="post-series">series <a href="/series/wrds-tips/"><i class="far fa-list-alt fa-fw"></i>WRDS Tips</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2023-01-24">2023-01-24</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime="2023-01-25">2023-01-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;486 words&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details series-nav open">
+                                <div class="details-summary series-title">
+                                    <span>Series - WRDS Tips</span>
+                                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                                </div>
+                                <div class="details-content series-content">
+                                    <nav>
+                                        <ul>
+                                                    <li><a href="/nail-down-earnings-time/">Nailing down the earnings event time to the millisecond
+</a></li>
+                                                    <li><a href="/accepted-date-not-match-edgar/">The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+</a></li><li><span class="active">The correct way to use CCM</span></li></ul>
+                                    </nav>
+                                </div>
+                            </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>CCM is a product provided by CRSP to link the Compustat database (<code>gvkey</code>) to CRSP (<code>permno</code>). In CCM, there&rsquo;re three tables you can use to make the link:</p>
+<ul>
+<li><code>ccmxpf_linktable</code></li>
+<li><code>ccmxpf_lnkhist</code></li>
+<li><code>ccmxpf_lnkused</code></li>
+</ul>
+<p>Which one should you use?</p>
+<h1 id="tldr" class="headerLink">
+    <a href="#tldr" class="header-mark"></a>TL;DR</h1><ul>
+<li>WRDS recommend using <code>ccmxpf_lnkhist</code>:</li>
+</ul>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><em>&ldquo;The link history table (CCMXPF_LNKHIST) is <strong>the main table used for WRDS CCM web queries</strong>. It provides <strong>access to all Compustat records</strong>, regardless of whether or not the securities are in the CRSP universe.&rdquo;</em></div>
+        </div>
+    </div>
+<ul>
+<li>
+<p><strong><code>ccmxpf_lnktable</code> is deprecated and should not be used.</strong></p>
+<p>Before Feb 2014, <code>ccmxpf_lnktable</code> is used to add <code>usedflag</code> to <code>ccmxpf_lnkused</code>. But after Feb 2014 <code>usedflag</code> is no longer needed, hence <code>ccmxpf_lnktable</code> become meaningless:</p>
+</li>
+</ul>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><em>&ldquo;SAS programmers will also notice a change.  Since Used Flag is no longer needed the dataset CCMXPF_LINKTABLE is also not needed.  This table added Used Flag from CCMXPF_LNKUSED to the data in CCMXPF_LNKHIST.  The Link History table is &ldquo;Compustat-centric&rdquo; - it has all companies, whether or not a link exists to a security in CRSP.  It has all the companies in the Link Used table and more. <strong>We recommend using the Link History dataset</strong> directly.&rdquo;</em></div>
+        </div>
+    </div>
+<ul>
+<li><code>ccmxpf_lnkused</code> is safe to use, but it&rsquo;s CRSP centric, meaning it has a smaller stock universe than <code>ccmxpf_lnkhist</code>. For most of the time, you should use <code>ccmxpf_lnkhist</code> instead of <code>ccmxpf_lnkused.</code></li>
+</ul>
+<div class="details admonition quote open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-quote-right fa-fw"></i>Quote<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><em>&ldquo;The link used table (CCMXPF_LNKUSED) has <strong>all records of GVKEYs with a match to a</strong> <strong><code>PERMNO</code></strong> <strong>identifier</strong>, even those not used. This table is <strong>CRSP-centric</strong> (i.e. starting with <code>PERMNO</code>), compared to the link history table which is Compustat-centric (i.e. starting with <code>GVKEY</code>). This table allows users searching by <code>PERMNO</code> to find all possible <code>GVKEYs</code> that have ever been linked, including those not used during a certain period.&rdquo;</em></div>
+        </div>
+    </div>
+<h1 id="clean-ccmxpf_lnkhist" class="headerLink">
+    <a href="#clean-ccmxpf_lnkhist" class="header-mark"></a>Clean <code>ccmxpf_lnkhist</code></h1><p>While <code>lnkhist</code> is the go-to table, it has an issue of &ldquo;consecutive observations.&rdquo; As an illustration, see the following example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl">  <span class="n">gvkey</span> <span class="n">lpermno</span> <span class="n">lpermco</span> <span class="n">linkdt</span>     <span class="n">linkenddt</span> 
+</span></span><span class="line"><span class="cl"><span class="m">1</span> <span class="m">001010</span> <span class="m">10006</span>  <span class="m">22156</span>   <span class="m">1950-05-01</span> <span class="m">1962-01-30</span> 
+</span></span><span class="line"><span class="cl"><span class="m">2</span> <span class="m">001010</span> <span class="m">10006</span>  <span class="m">22156</span>   <span class="m">1962-01-31</span> <span class="m">1984-06-28</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>As you can see, line 1 and 2 should be merged into a single line:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl">  <span class="n">gvkey</span> <span class="n">lpermno</span> <span class="n">lpermco</span> <span class="n">linkdt</span>     <span class="n">linkenddt</span> 
+</span></span><span class="line"><span class="cl"><span class="m">1</span> <span class="m">001010</span> <span class="m">10006</span>  <span class="m">22156</span>   <span class="m">1950-05-01</span> <span class="m">1981-06-28</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>WRDS provides an <a href="https://wrds-www.wharton.upenn.edu/pages/wrds-research/macros/wrds-macros-ccm_lnktablesas/" target="_blank" rel="noopener noreferrer">SAS example</a> to &ldquo;collapse&rdquo; the consecutive observations (yeah I know the question &ldquo;who&rsquo;s still using SAS&rdquo; is like &ldquo;who&rsquo;s still buying GTA5&rdquo;). I translate the SAS code to R</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-R" data-lang="R"><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">data.table</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># get the &#34;ccmxpf_lnkhist&#34; table</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># make sure ccm is a data.table</span>
+</span></span><span class="line"><span class="cl"><span class="n">ccm</span> <span class="o">=</span> <span class="nf">get_ccmxpf_lnkhist</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># create previous linkenddt and linkdt</span>
+</span></span><span class="line"><span class="cl"><span class="n">ccm</span> <span class="o">=</span> <span class="n">ccm[</span><span class="p">,</span> <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">last_linkdt</span><span class="o">=</span><span class="nf">shift</span><span class="p">(</span><span class="n">linkdt</span><span class="p">),</span> <span class="n">last_linkenddt</span><span class="o">=</span><span class="nf">shift</span><span class="p">(</span><span class="n">linkenddt</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">	  <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">lpermno</span><span class="p">)</span><span class="n">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># merge consecutive observations</span>
+</span></span><span class="line"><span class="cl"><span class="n">ccm</span> <span class="o">=</span> <span class="n">ccm[</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># if linkdt is on the same day or 1 day after last_linkenddt, </span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># rewrite linkdt to last_linkdt</span>
+</span></span><span class="line"><span class="cl">      <span class="n">linkdt</span><span class="o">==</span><span class="n">last_linkenddt</span><span class="m">+1</span> <span class="o">|</span> <span class="n">linkdt</span><span class="o">==</span><span class="n">last_linkenddt</span><span class="p">,</span>   
+</span></span><span class="line"><span class="cl">      <span class="s">&#39;:=&#39;</span><span class="p">(</span><span class="n">linkdt</span><span class="o">=</span><span class="n">last_linkdt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># only keep the last observation of (gvkey, lpermno, linkdt) pair</span>
+</span></span><span class="line"><span class="cl">    <span class="n">]</span><span class="nf">[order</span><span class="p">(</span><span class="n">gvkey</span><span class="p">,</span> <span class="n">lpermno</span><span class="p">,</span> <span class="n">linkdt</span><span class="p">,</span> <span class="n">linkenddt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="n">.SD[.N]</span><span class="p">,</span> <span class="n">keyby</span><span class="o">=</span><span class="n">.(gvkey</span><span class="p">,</span> <span class="n">lpermno</span><span class="p">,</span> <span class="n">linkdt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">][</span><span class="p">,</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;last_linkdt&#39;</span><span class="p">,</span> <span class="s">&#39;last_linkenddt&#39;</span><span class="p">)</span> <span class="o">:=</span> <span class="kc">NULL</span><span class="n">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-01-25</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="#" title="Share on Twitter" data-sharer="twitter" data-url="https://hugodoit.pages.dev/how-to-use-ccm/" data-title="The correct way to use CCM" data-hashtags="wrds,crsp"><i class="fab fa-twitter fa-fw"></i></a><a href="#" title="Share on Facebook" data-sharer="facebook" data-url="https://hugodoit.pages.dev/how-to-use-ccm/" data-hashtag="wrds"><i class="fab fa-facebook-square fa-fw"></i></a><a href="#" title="Share on Hacker News" data-sharer="hackernews" data-url="https://hugodoit.pages.dev/how-to-use-ccm/" data-title="The correct way to use CCM"><i class="fab fa-hacker-news fa-fw"></i></a><a href="#" title="Share on 微博" data-sharer="weibo" data-url="https://hugodoit.pages.dev/how-to-use-ccm/" data-title="The correct way to use CCM"><i class="fab fa-weibo fa-fw"></i></a><a href="#" title="Share on Evernote" data-sharer="evernote" data-url="https://hugodoit.pages.dev/how-to-use-ccm/" data-title="The correct way to use CCM"><i class="fab fa-evernote fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/wrds/">wrds</a>,&nbsp;<a href="/tags/crsp/">crsp</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/foverlap-and-roll/" class="prev" rel="prev" title="How to query an interval? Understand `foverlap` and `roll` in data.table"><i class="fas fa-angle-left fa-fw"></i>How to query an interval? Understand `foverlap` and `roll` in data.table</a>
+            <a href="/accepted-date-not-match-edgar/" class="next" rel="next" title="The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+">The &#34;Accepted Date&#34; from WRDS SEC suite doesn&#39;t match EDGAR
+<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="twikoo"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://twikoo.js.org/">Twikoo</a>.
+            </noscript></div></article></div>
+        </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">
+                    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer" title="Hugo 0.110.0">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank" rel="noopener noreferrer" title="DoIt 0.2.13"><i class="far fa-edit fa-fw"></i> DoIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/XiaomoWu" target="_blank" rel="noopener noreferrer">Yu Zhu</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+            <div class="footer-line"></div>
+            <div class="footer-line">
+            </div>
+        </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div class="assets"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{"twikoo":{"el":"#twikoo","envId":"https://twikoo-xiaomowu.vercel.app/","lang":"en"}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":true,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":300,"threshold":0.1,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"twemoji":true};</script><script type="text/javascript" src="/lib/twikoo/twikoo.all.min.js" defer></script><script type="text/javascript" src="/js/twikoo.min.js" defer></script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js" defer></script><script type="text/javascript" src="/js/twemoji.min.js" defer></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script></div>
+</body>
+
+</html>

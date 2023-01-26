@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>crsp - Tag - </title>
+        <link>https://hugodoit.pages.dev/tags/crsp/</link>
+        <description>crsp - Tag - </description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>yu.zhu@utah.edu (Yu Zhu)</managingEditor>
+            <webMaster>yu.zhu@utah.edu (Yu Zhu)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 24 Jan 2023 17:57:41 -0700</lastBuildDate><atom:link href="https://hugodoit.pages.dev/tags/crsp/" rel="self" type="application/rss+xml" /><item>
+    <title>The correct way to use CCM</title>
+    <link>https://hugodoit.pages.dev/how-to-use-ccm/</link>
+    <pubDate>Tue, 24 Jan 2023 17:57:41 -0700</pubDate><author>
+        <name>Yu Zhu</name>
+    </author><guid>https://hugodoit.pages.dev/how-to-use-ccm/</guid>
+    <description><![CDATA[WRDS provides multiple CCM tables, which one should you use?]]></description>
+</item></channel>
+</rss>
